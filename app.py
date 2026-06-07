@@ -685,9 +685,17 @@ def render_tab_nav():
         ("chat",     "Chat"),
     ]
 
-    cols = st.columns(len(tabs) + 4)
+    col_back, col1, col2, col3, _ = st.columns([1, 1, 1, 1, 3])
+
+    with col_back:
+        if st.button("← New Report", key="home_btn"):
+            for k in list(st.session_state.keys()):
+                del st.session_state[k]
+            st.rerun()
+
     for i, (key, label) in enumerate(tabs):
-        with cols[i]:
+        col = [col1, col2, col3][i]
+        with col:
             active = "🔴 " if t == key else ""
             if st.button(
                 f"{active}{label}",
@@ -697,7 +705,7 @@ def render_tab_nav():
                 st.session_state.active_tab = key
                 st.rerun()
 
-    st.markdown("<hr style='margin:0 0 2rem 0'>", unsafe_allow_html=True)
+    st.markdown("\n---\n", unsafe_allow_html=True)
 
 
 # ─────────────────────────────────────────────
@@ -968,15 +976,6 @@ def main():
             elif area == "chat":
                 render_chat()
             st.markdown('</div>', unsafe_allow_html=True)
-
-        # Reset button at bottom
-        st.markdown("<br>", unsafe_allow_html=True)
-        cols = st.columns([1, 6])
-        with cols[0]:
-            if st.button("← New Report"):
-                for k in list(st.session_state.keys()):
-                    del st.session_state[k]
-                st.rerun()
     else:
         uploaded = render_upload()
         render_analyze(uploaded)
